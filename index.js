@@ -11,6 +11,9 @@ var SETTINGS={
   cameraFOV: 40      //in degrees, 3D camera FOV
 };
 
+var piano = Synth.createInstrument('piano');
+
+
 //some globalz :
 var THREECAMERA;
 
@@ -42,6 +45,20 @@ function main(){
   })
 } //end main()
 
+
+const noteMap = {
+  0.1: 'C',
+  0.2: 'C',
+  0.3: 'D#',
+  0.4: 'D#',
+  0.5: 'F',
+  0.6: 'F',
+  0.7: 'G',
+  0.8: 'A#',
+  0.9: 'B',
+  1: 'B#',
+};
+
 function init_faceFilter(videoSettings){
   JEEFACEFILTERAPI.init({
     canvasId: 'FaceDrummerCanvas',
@@ -60,9 +77,9 @@ function init_faceFilter(videoSettings){
     //called at each render iteration (drawing loop)
     callbackTrack: function(detectState){
       THREE.JeelizHelper.render(detectState, THREECAMERA);
-      console.log(detectState.expressions[0]);
-      if (detectState.expressions[0] >= 0.8) {
-        console.log('mouth open');
+      let expression = detectState.expressions[0];
+      if (expression >= 0.1 && expression <= 0.9) {
+        piano.play(noteMap[expression.toFixed(1)], 4, 0.3);
       }
     }
   });
